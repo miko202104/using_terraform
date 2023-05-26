@@ -1,0 +1,22 @@
+1. AWS account
+2. Terraform Cloud (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+- cloud organization and workspace, api-driven
+- env variables
+- create api token
+3. github repository
+- github login
+- fork https://github.com/JesseHoch/learn-terraform-github-actions
+- create TF_API_TOKEN secret
+- go to Actions -> click button "I understand.."
+- git clone https://github.com/JesseHoch/learn-terraform-github-actions to PC
+4. Actions workflow overview files
+5. Create and manage Pull Requests
+- new branch: git checkout -b 'update-tfs'
+- edit main.tf: add form TF Cloud orgazniztion and workspace
+- git add main.tf
+- git commit -am 'poing backend in main.tf'
+- git push --set-upstream origin update-tfc
+- go to GithubAction, click Compare and pull request -> Create pull request -> merge
+6. verify on GH Actions, Teraform Cloud
+
+
