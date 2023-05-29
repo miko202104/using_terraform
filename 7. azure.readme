@@ -1,0 +1,88 @@
+azure cli
+azure credentials
+
+brew install azure-cli
+
+az login
+
+
+
+# main.tf file
+# Configure the Azure provider
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 2.26"
+    }
+  }
+
+  required_version = ">= 0.14.9"
+}
+
+provider "azurerm" {
+  features {}
+  skip_provider_registration = true
+}
+
+# Create a virtual network
+resource "azurerm_virtual_network" "vnet" {
+  name                = "wft100500"
+  address_space       = ["10.0.0.0/16"]
+  location            = "Central US"
+  resource_group_name = var.res_group
+  tags = {
+    Service   = "Custom"
+    ManagedBy = "Resource"
+  }
+}
+
+# Create subnet
+resource "azurerm_subnet" "subnet" {
+  name                 = var.azurerm_subnet_name
+  resource_group_name  = var.res_group
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_service_plan" "web_serviceplan" {
+  name                = "svcplan-01"
+  location            = "Central US"
+  resource_group_name = var.res_group
+  sku_name            = "F1"
+  os_type             = "Linux"
+}
+
+resource "azurerm_linux_web_app" "lin_webapp" {
+  name                = "webapp-01"
+  location            = "Central US"
+  resource_group_name = var.res_group
+  service_plan_id     = azurerm_service_plan.web_serviceplan.id
+  site_config {
+  }
+
+}
+
+#variables.tf
+
+variable "azurerm_subnet_name" {
+  type = string
+}
+
+variable "res_group" {
+  type    = string
+  default = "1-8fa315f1-playground-sandbox"
+}
+
+#terraform.tfvars
+azurerm_subnet_name = "Robins"
+res_group           = "1-8fa315f1-playground-sandbox"
+
+#outputs.tf
+output "azurerm_virtual_network_name" {
+  value = azurerm_virtual_network.vnet.name
+}
+
+output "azurerm_subnet_name" {
+  value = azurerm_subnet.subnet.name
+}
